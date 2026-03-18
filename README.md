@@ -14,7 +14,7 @@ The goal is to identify employees who are likely to leave and analyze key factor
 
 ## 📂 Dataset | 数据集
 
-- Source: IBM HR Analytics Employee Attrition Dataset  
+- Source: IBM HR Employee Attrition Dataset  
 - File: `WA_Fn-UseC_-HR-Employee-Attrition.csv`  
 - Task Type: **Binary Classification**
 
@@ -23,25 +23,19 @@ The goal is to identify employees who are likely to leave and analyze key factor
 ## ⚙️ Methodology | 方法流程
 
 ### 1. Data Processing | 数据处理
-- Remove ID / constant columns (e.g., `EmployeeNumber`, `Over18`)
+- Remove ID / constant columns (e.g., `EmployeeNumber`, `EmployeeCount`, `Over18`, `StandardHours`)
 - Handle missing values using median / most frequent imputation
-- One-hot encoding with `drop='if_binary'` for cleaner interpretation
-
----
+- Apply one-hot encoding with `drop='if_binary'` for cleaner interpretation
 
 ### 2. Data Split | 数据划分
 - Fixed **train_val / test split**
 - Test set is strictly held out and never used during model selection
 
----
-
-### 3. Model Candidates | 模型选择
-- Dummy (baseline)
+### 3. Model Candidates | 模型候选
+- Dummy baseline
 - Logistic Regression (unweighted / balanced)
 - Random Forest
 - XGBoost (if available)
-
----
 
 ### 4. Model Selection | 模型选择策略
 - Based on **OOF (out-of-fold) predictions**
@@ -49,23 +43,17 @@ The goal is to identify employees who are likely to leave and analyze key factor
   - Primary: **PR-AUC**
   - Secondary: ROC-AUC, F1
 
----
-
 ### 5. Cross Validation | 交叉验证
 - 5-fold Stratified K-Fold
 - Report **mean ± standard deviation**
-- Used for robustness verification (not threshold tuning)
-
----
+- Used for robustness verification rather than threshold tuning
 
 ### 6. Threshold Strategy | 阈值策略
 - Threshold selection is separated from model selection
 - Compared strategies:
-  - Default (0.50)
-  - Best F1
-  - Recall floor (business-oriented)
-
----
+  - Default threshold (0.50)
+  - Best F1 threshold
+  - Recall-floor threshold (business-oriented reference)
 
 ### 7. Evaluation | 模型评估
 Metrics include:
@@ -75,56 +63,42 @@ Metrics include:
 - Precision / Recall
 - Accuracy / Balanced Accuracy
 
----
-
 ### 8. Error Analysis | 误差分析
 - Analyze False Positives (FP) and False Negatives (FN)
-- Key features:
+- Inspect key features such as:
   - OverTime
   - JobRole
   - MonthlyIncome
   - Age
 
----
-
 ### 9. Model Interpretation | 模型解释
 - Logistic Regression coefficients
-- Directional interpretation (NOT causal)
+- Directional interpretation only (**not causal**)
 
 ---
 
-## 📊 Outputs | 输出文件说明
+## 📁 Repository Structure | 仓库结构
 
-| File | Description |
-|------|------------|
-| `oof_model_comparison.csv` | 模型排序结果（OOF） |
-| `cross_validate_summary.csv` | CV mean ± std |
-| `oof_threshold_plan.csv` | 阈值策略（训练阶段） |
-| `test_threshold_comparison.csv` | 测试集阈值对比 |
-| `final_test_metrics.csv` | 最终报告指标 |
-| `test_error_analysis_full.csv` | 全量误差分析 |
-| `feature_coefficients.csv` | LR 系数解释 |
-| `report_figures/` | 所有报告图表 |
-
----
-
-## 📈 Key Findings | 关键结论
-
-- Logistic Regression performs competitively and is more stable
-- Accuracy alone is misleading due to class imbalance
-- PR-AUC is a more appropriate primary metric
-- Threshold selection significantly affects Precision/Recall trade-off
-
----
-
-## ⚠️ Limitations | 局限性
-
-- Single hold-out test set may introduce variance
-- Threshold strategy may not generalize perfectly
-- Results show correlation, not causation
-
----
-
-## 🚀 How to Run | 运行方式
-
-1. Open the notebook:
+```text
+CDS524-IBM-HR-Attrition-Prediction/
+├── IBM_HR_Attrition_Final_Notebook.ipynb
+├── README.md
+├── WA_Fn-UseC_-HR-Employee-Attrition.csv
+├── split_artifacts.json
+├── oof_model_comparison.csv
+├── cross_validate_summary.csv
+├── oof_threshold_plan.csv
+├── test_threshold_comparison.csv
+├── final_test_metrics.csv
+├── test_error_analysis_full.csv
+├── feature_coefficients.csv
+└── report_figures/
+    ├── 01_target_distribution.png
+    ├── 02_attrition_rate_overtime_jobrole.png
+    ├── 03_cv_model_comparison.png
+    ├── 04_threshold_comparison_metrics.png
+    ├── 05_pr_curve_with_threshold_points.png
+    ├── 06_confusion_matrix_presentation.png
+    ├── 07_lr_coefficients_directional.png
+    ├── 08_error_analysis_overtime.png
+    └── 09_error_analysis_jobrole.png
