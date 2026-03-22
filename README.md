@@ -160,7 +160,7 @@ This means the final model is better understood as a **reproducible and interpre
 - 提高了 precision，
 - 但降低了 recall。
 
-因此，该模型更适合作为一个**可复现、可解释的基线系统**，而不是高召回的真实 HR 生产决策工具。
+因此，该模型展示了一个具有实际意义且可解释的员工离职预测基线，同时也为后续在更注重召回率的实际场景中进一步优化留下了空间。
 
 ---
 
